@@ -1,11 +1,11 @@
 {
   "ProjectName": "Gen09 Hybrid",
-  "ProjectGuid": "eb0649bb-fd1d-47fe-9477-ff4481f4a1a5",
+  "ProjectGuid": "75b6a1fe-0f74-4f12-bbee-da96f9afecb3",
   "projectVersion": 1,
   "AppIdentifier": "com.telerik.Gen09Hybrid",
-  "DisplayName": "Gen09 Hybrid",
+  "DisplayName": "Gen 09 Hybrid",
   "Author": "",
-  "Description": "Gen09 Hybrid",
+  "Description": "Gen 09 Hybrid",
   "BundleVersion": "1.0",
   "AndroidVersionCode": "1",
   "iOSDeviceFamily": [
@@ -32,8 +32,8 @@
     "ID_CAP_WEBBROWSERCOMPONENT"
   ],
   "WP8Requirements": [],
-  "WP8PublisherID": "{c0c2cbe9-a292-41d7-a976-9d037058d7b2}",
-  "WP8ProductID": "{ff580afe-7398-44d6-a051-ba6d13bc841f}",
+  "WP8PublisherID": "{23084277-c3f4-42b6-b8d3-cdaba7d8c330}",
+  "WP8ProductID": "{aff86cea-6d79-48a3-adc9-3ba4b253c2f5}",
   "WPSdk": "8.0",
   "WP8PackageIdentityName": "1234Telerik.Gen09Hybrid",
   "WP8WindowsPublisherName": "CN=Telerik",

@@ -588,9 +588,7 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
+            currentQueue[queueIndex].run();
         }
         queueIndex = -1;
         len = queue.length;
@@ -642,6 +640,7 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
+// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -3737,17 +3736,17 @@ module.exports = function (value, replacer, space) {
       var date = computeValue(obj, expr['date']);
       // TODO: use python-style date formatting
       /*
-       %Y    Year (4 digits, zero padded)    0000-9999
-       %m    Month (2 digits, zero padded)    01-12
-       %d    Day of Month (2 digits, zero padded)    01-31
-       %H    Hour (2 digits, zero padded, 24-hour clock)    00-23
-       %M    Minute (2 digits, zero padded)    00-59
-       %S    Second (2 digits, zero padded)    00-60
-       %L    Millisecond (3 digits, zero padded)    000-999
-       %j    Day of year (3 digits, zero padded)    001-366
-       %w    Day of week (1-Sunday, 7-Saturday)    1-7
-       %U    Week of year (2 digits, zero padded)    00-53
-       %%    Percent Character as a Literal    %
+       %Y	Year (4 digits, zero padded)	0000-9999
+       %m	Month (2 digits, zero padded)	01-12
+       %d	Day of Month (2 digits, zero padded)	01-31
+       %H	Hour (2 digits, zero padded, 24-hour clock)	00-23
+       %M	Minute (2 digits, zero padded)	00-59
+       %S	Second (2 digits, zero padded)	00-60
+       %L	Millisecond (3 digits, zero padded)	000-999
+       %j	Day of year (3 digits, zero padded)	001-366
+       %w	Day of week (1-Sunday, 7-Saturday)	1-7
+       %U	Week of year (2 digits, zero padded)	00-53
+       %%	Percent Character as a Literal	%
        */
       throw new Error("Not Implemented");
     }
@@ -7857,45 +7856,45 @@ var CryptoJS = require('./core').CryptoJS;
 
 // create custom json serialization format
 var JsonFormatter = {
-    stringify: function (cipherParams) {
-        // create json object with ciphertext
-        var jsonObj = {
-            ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64)
-        };
-        
-        // optionally add iv and salt
-        if (cipherParams.iv) {
-            jsonObj.iv = cipherParams.iv.toString();
-        }
-        
-        if (cipherParams.salt) {
-            jsonObj.s = cipherParams.salt.toString();
-        }
+	stringify: function (cipherParams) {
+		// create json object with ciphertext
+		var jsonObj = {
+			ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64)
+		};
+		
+		// optionally add iv and salt
+		if (cipherParams.iv) {
+			jsonObj.iv = cipherParams.iv.toString();
+		}
+		
+		if (cipherParams.salt) {
+			jsonObj.s = cipherParams.salt.toString();
+		}
 
-        // stringify json object
-        return JSON.stringify(jsonObj)
-    },
+		// stringify json object
+		return JSON.stringify(jsonObj)
+	},
 
-    parse: function (jsonStr) {
-        // parse json string
-        var jsonObj = JSON.parse(jsonStr);
-        
-        // extract ciphertext from json object, and create cipher params object
-        var cipherParams = CryptoJS.lib.CipherParams.create({
-            ciphertext: CryptoJS.enc.Base64.parse(jsonObj.ct)
-        });
-        
-        // optionally extract iv and salt
-        if (jsonObj.iv) {
-            cipherParams.iv = CryptoJS.enc.Hex.parse(jsonObj.iv);
-        }
+	parse: function (jsonStr) {
+		// parse json string
+		var jsonObj = JSON.parse(jsonStr);
+		
+		// extract ciphertext from json object, and create cipher params object
+		var cipherParams = CryptoJS.lib.CipherParams.create({
+			ciphertext: CryptoJS.enc.Base64.parse(jsonObj.ct)
+		});
+		
+		// optionally extract iv and salt
+		if (jsonObj.iv) {
+			cipherParams.iv = CryptoJS.enc.Hex.parse(jsonObj.iv);
+		}
             
-        if (jsonObj.s) {
-            cipherParams.salt = CryptoJS.enc.Hex.parse(jsonObj.s);
-        }
-        
-        return cipherParams;
-    }
+		if (jsonObj.s) {
+			cipherParams.salt = CryptoJS.enc.Hex.parse(jsonObj.s);
+		}
+		
+		return cipherParams;
+	}
 };
 
 exports.JsonFormatter = JsonFormatter;
@@ -8781,7 +8780,7 @@ code.google.com/p/crypto-js/wiki/License
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/tildeio/rsvp.js/master/LICENSE
- * @version   3.1.0
+ * @version   3.0.20
  */
 
 (function() {
@@ -9012,7 +9011,7 @@ code.google.com/p/crypto-js/wiki/License
         @param {*} options optional value to be passed to any event handlers for
         the given `eventName`
       */
-      'trigger': function(eventName, options, label) {
+      'trigger': function(eventName, options) {
         var allCallbacks = lib$rsvp$events$$callbacksFor(this), callbacks, callback;
 
         if (callbacks = allCallbacks[eventName]) {
@@ -9020,7 +9019,7 @@ code.google.com/p/crypto-js/wiki/License
           for (var i=0; i<callbacks.length; i++) {
             callback = callbacks[i];
 
-            callback(options, label);
+            callback(options);
           }
         }
       }
@@ -9554,7 +9553,7 @@ code.google.com/p/crypto-js/wiki/License
         var promise = this;
         lib$rsvp$config$$config.after(function() {
           if (promise._onError) {
-            lib$rsvp$config$$config['trigger']('error', reason, promise._label);
+            lib$rsvp$config$$config['trigger']('error', reason);
           }
         });
       },
@@ -9912,7 +9911,7 @@ code.google.com/p/crypto-js/wiki/License
     var lib$rsvp$asap$$browserWindow = (typeof window !== 'undefined') ? window : undefined;
     var lib$rsvp$asap$$browserGlobal = lib$rsvp$asap$$browserWindow || {};
     var lib$rsvp$asap$$BrowserMutationObserver = lib$rsvp$asap$$browserGlobal.MutationObserver || lib$rsvp$asap$$browserGlobal.WebKitMutationObserver;
-    var lib$rsvp$asap$$isNode = typeof self === 'undefined' &&
+    var lib$rsvp$asap$$isNode = typeof window === 'undefined' &&
       typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
 
     // test for web worker but not in IE10
@@ -15822,15 +15821,13 @@ module.exports = (function () {
      * @param {string} [options.scheme=http] - The URI scheme used to make requests. Supported values: http, https
      * @param {boolean} [options.parseOnlyCompleteDateTimeObjects=false] - If set to true, the SDK will parse only complete date strings (according to the ISO 8601 standard).
      * @param {boolean} [options.emulatorMode=false] - Set this option to true to set the SDK in emulator mode.
-     * @param {object|boolean} [options.offline] - Set this option to true to enable Offline Support using the default offline settings.
-     * @param {boolean} [options.offline.enabled=false] - When using an object to initialize Offline Support with non-default settings, set this option to enable or disable Offline Support.
+     * @param {object|boolean} [options.offline] - Set this option to true to use the default offline settings.
+	 * @param {boolean} [options.offline.enabled=false] - When using an object to initialize Offline Support with non-default settings, set this option to enable or disable Offline Support.
      * @param {boolean} [options.offline.isOnline=true] - Whether the storage is in online mode initially.
      * @param {ConflictResolutionStrategy|function} [options.offline.conflicts.strategy=ConflictResolutionStrategy.ClientWins] - A constant specifying the conflict resolution strategy or a function used to resolve the conflicts.
-     * @param {object} [options.offline.storage] - An object specifying settings for the offline storage.
-     * @param {string} [options.offline.storage.provider=_platform dependant_] - Allows you to select an offline storage provider. Possible values: Everlive.Constants.StorageProvider.LocalStorage, Everlive.Constants.StorageProvider.FileSystem, Everlive.Constants.StorageProvider.Custom. Default value: Cordova, Web: Everlive.Constants.StorageProvider.LocalStorage; NativeScript, Node.js: Everlive.Constants.StorageProvider.FileSystem.
-     * @param {string} [options.offline.storage.storagePath=el_store] - A relative path specifying where data will be saved if the FileSystem provider is used.
-     * @param {number} [options.offline.storage.requestedQuota=10485760] - How much memory (in bytes) to be requested when using FileSystem for persistence. This option is only valid for Chrome as the other platforms use all the available space.
-     * @param {object} [options.offline.storage.implementation] - When storage.provider is set to custom, use this object to specify your custom offline storage implementation.
+     * @param {StorageProvider|object} [options.offline.storage.provider=StorageProvider.LocalStorage] - An object specifying settings for the offline storage provider.
+     * @param {string} [options.offline.storage.storagePath=el_store] - A relative path specifying where the files will be saved if file system is used for persistence for item metadata.
+     * @param {number} [options.offline.storage.requestedQuota=10485760] - How much memory (in bytes) to be requested when using the file system for persistence. This option is only valid for Chrome as the other platforms use all the available space.
      * @param {string} [options.offline.encryption.key] - A key that will be used to encrypt the data stored offline.
      * @param {string} [options.offline.files.storagePath=el_file_store] - A relative path specifying where the files will be saved if file system is used for persistence of files in offline mode.
      * @param {string} [options.offline.files.metaPath=el_file_mapping] - A relative path specifying where the metadata file will be saved if file system is used for persistence of files in offline mode.
@@ -15852,10 +15849,6 @@ module.exports = (function () {
      * @param {object} [options.helpers.html.attributes.fileSource=data-href] - A custom name for the attribute to be used to set the anchor source.
      * @param {object} [options.helpers.html.attributes.enableOffline=data-offline] - A custom name for the attribute to be used to control offline processing.
      * @param {object} [options.helpers.html.attributes.enableResponsive=data-responsive] - A custom name for the attribute to be used to control Responsive Images processing.
-     * @param {object|boolean} [options.caching=false] - Set this option to true to enable caching using the default cache settings.
-     * @param {number} [options.caching.maxAge=60] - Global setting for maximum age of cached items in minutes.
-     * @param {boolean} [options.caching.enabled=false] - Global setting for enabling or disabling cache.
-     * @param {object} [options.caching.typeSettings] - Specify per-content-type settings that override the global settings.
      */
     function Everlive(options) {
         var self = this;
@@ -16039,7 +16032,7 @@ module.exports = (function () {
      * @param {Function} [options.success] Success callback that will be called when the request finishes successfully.
      * @param {Function} [options.error] Error callback to be called in case of an error.
      * @param {object} [options.headers] Additional headers to be included in the request.
-     * @param {Query|object} [options.filter] This is either a {@link Query} or a [filter](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) expression.
+     * @param {Query|object} [options.filter] This is either a {@link Query} or a [filter]({% slug rest-api-querying-filtering %}) expression.
      * @param {boolean} [options.authHeaders=true] When set to false, no Authorization headers will be sent with the request.
      * @returns {function} The request configuration object containing the `send` function that sends the request.
      */
@@ -16184,13 +16177,7 @@ module.exports = (function () {
          * @description An instance of the [Authentication]{@link Authentication} class for working with the authentication of the SDK.
          * @member {Authentication} authentication
          */
-        /**
-         * @memberOf Everlive
-         * @instance
-         * @description An instance of the [Authentication]{@link Authentication} class for working with the authentication of the SDK.
-         * @member {authentication} authentication
-         */
-        this.authentication = this.Authentication = new Authentication(this, this.setup.authentication);
+        this.authentication = new Authentication(this, this.setup.authentication);
     };
 
     var initializeHelpers = function initializeHelpers(options) {
@@ -16455,12 +16442,7 @@ module.exports = (function () {
          * @memberOf Push.prototype
          */
         ensurePushIsAvailable: function () {
-            var isPushNotificationPluginAvailable = (typeof window !== 'undefined' && window.plugins && window.plugins.pushNotification);
-
-            if (!isPushNotificationPluginAvailable && !this._inAppBuilderSimulator()) {
-                throw new EverliveError("The push notification plugin is not available. Ensure that the pushNotification plugin is included " +
-                "and use after `deviceready` event has been fired.");
-            }
+            CurrentDevice.ensurePushIsAvailable();            
         },
         /**
          * Returns the current device for sending push notifications
@@ -16477,19 +16459,17 @@ module.exports = (function () {
 
             if (arguments.length === 0) {
                 emulatorMode = this._el.setup._emulatorMode;
-            }
+            }            
 
             if (!this._currentDevice) {
                 this._currentDevice = new CurrentDevice(this);
             }
 
-            this._currentDevice.emulatorMode = emulatorMode || this._inAppBuilderSimulator();
+            var inAppBuilderSimulator = typeof window !== undefined && window.navigator && window.navigator.simulator;
+
+            this._currentDevice.emulatorMode = emulatorMode || inAppBuilderSimulator;
 
             return this._currentDevice;
-        },
-
-        _inAppBuilderSimulator: function () {
-            return typeof window !== undefined && window.navigator && window.navigator.simulator;
         },
 
         /**
@@ -16672,8 +16652,6 @@ module.exports = (function () {
          * @param {Function} [onError] Callback to invoke on error.
          */
         setBadgeNumber: function (badge, onSuccess, onError) {
-            var self = this;
-
             this.ensurePushIsAvailable();
 
             badge = parseInt(badge);
@@ -16691,7 +16669,7 @@ module.exports = (function () {
             return buildPromise(function (successCb, errorCb) {
                 currentDevice._pushHandler.devices.updateSingle(deviceRegistration).then(
                     function () {
-                        if (window.plugins && window.plugins.pushNotification && !self._inAppBuilderSimulator()) {
+                        if (window.plugins && window.plugins.pushNotification) {
                             return window.plugins.pushNotification.setApplicationIconBadgeNumber(successCb, errorCb, badge);
                         } else {
                             return successCb();
@@ -17489,16 +17467,6 @@ var cacheableOperations = [
     DataQuery.operations.count
 ];
 
-/**
- * @class CacheModule
- * @classDesc A class providing access to the various caching features.
- */
-
-/**
- * Represents the {@link CacheModule} class.
- * @memberOf Everlive.prototype
- * @member {CacheModule} cache
- */
 CacheModule.prototype = {
     _hash: function (obj) {
         return jsonStringify(obj);
@@ -17508,7 +17476,7 @@ CacheModule.prototype = {
     _initStore: function (sdkOptions) {
         if (!this.persister) {
             var offlineStorageOptions = buildOfflineStorageOptions(sdkOptions);
-            var storageKey = this.options.storage.storagePath + '_' + sdkOptions.apiKey;
+            var storageKey = this.options.storage.storagePath;
 
             this.persister = persisters.getPersister(storageKey, offlineStorageOptions);
         }
@@ -17618,11 +17586,6 @@ CacheModule.prototype = {
                                         return self._cacheQuery(dataQuery, hash);
                                     });
                             } else {
-                                //If cache is used, change 'me' to the ID of the logged in user (only for currentUser() requests).
-                                if (dataQuery.operation === DataQuery.operations.readById && dataQuery.additionalOptions.id === 'me') {
-                                    dataQuery.additionalOptions.id = self._everlive.setup.principalId;
-                                }
-
                                 return self._everlive.offlineStorage.processQuery(dataQuery)
                                     .then(function (result) {
                                         dataQuery.onSuccess(result);
@@ -17724,23 +17687,6 @@ CacheModule.prototype = {
         return this._hash(queryParams);
     },
 
-    /**
-     * Clears the cached data for a specified content type.
-     * @method clear
-     * @name clear
-     * @param {string} contentType The content type to clear.
-     * @memberOf CacheModule.prototype
-     * @returns {Promise}
-     */
-    /**
-     * Clears the cached data for a specified content type.
-     * @method clear
-     * @name clear
-     * @param {string} contentType The content type to clear.
-     * @memberOf CacheModule.prototype
-     * @param {function} [success] A success callback.
-     * @param {function} [error] An error callback.
-     */
     clear: function (contentType, success, error) {
         var self = this;
 
@@ -17756,21 +17702,6 @@ CacheModule.prototype = {
         }, success, error);
     },
 
-    /**
-     * Clears all data from the cache.
-     * @method clearAll
-     * @name clearAll
-     * @memberOf CacheModule.prototype
-     * @returns {Promise}
-     */
-    /**
-     * Clears all data from the cache.
-     * @method clearAll
-     * @name clearAll
-     * @memberOf CacheModule.prototype
-     * @param {function} [success] A success callback.
-     * @param {function} [error] An error callback.
-     */
     clearAll: function (success, error) {
         var self = this;
         self.cacheData = null;
@@ -18860,7 +18791,7 @@ module.exports = (function () {
  */
 /*!
  Everlive SDK
- Version 1.5.6
+ Version 1.5.3
  */
 (function () {
     var Everlive = require('./Everlive');
@@ -21079,8 +21010,6 @@ OfflineQueryProcessor.prototype = {
         var self = this;
         this._collectionCache = {};
         return buildPromise(function (success, error) {
-            self._collectionCache = {};
-
             self._persister.purgeAll(function () {
                 if (self.everlive.setup.caching) {
                     self.everlive.cache.clearAll(success, error);
@@ -21094,8 +21023,6 @@ OfflineQueryProcessor.prototype = {
     purge: function (contentType, success, error) {
         var self = this;
         return buildPromise(function (success, error) {
-            delete self._collectionCache[contentType];
-
             self._persister.purge(contentType, function () {
                 if (self.everlive.setup.caching) {
                     self.everlive.cache.clear(contentType, success, error);
@@ -21156,7 +21083,7 @@ module.exports = (function () {
             this._offlineFilesProcessor, this._everlive, this.setup);
 
         /**
-         * @memberOf OfflineModule.prototype
+         * @memberOf Everlive.prototype
          * @instance
          * @description An instance of the [OfflineFilesModule]{@link OfflineFilesModule} class for working with files in offline mode.
          * @member {OfflineFilesModule} files
@@ -21180,7 +21107,7 @@ module.exports = (function () {
 
     OfflineModule.prototype = {
         /**
-         * Removes all data from the offline storage. If caching is enabled clears the entire cache as well.
+         * Removes all data from the offline storage.
          * @method purgeAll
          * @name purgeAll
          * @memberOf OfflineModule.prototype
@@ -21188,19 +21115,18 @@ module.exports = (function () {
          * @param {function} [error] An error callback.
          */
         /**
-         * Removes all data from the offline storage. If caching is enabled clears the entire cache as well.
+         * Removes all data from the offline storage.
          * @method purgeAll
          * @name purgeAll
          * @memberOf OfflineModule.prototype
-         * @returns {Promise}
+         * @returns Promise
          */
         purgeAll: function (success, error) {
             return this._queryProcessor.purgeAll(success, error);
         },
 
         /**
-         * Removes all data for a specific content type from the offline storage. If caching is enabled clears the cache
-         * for the specified content type as well.
+         * Removes all data for a specific content type from the offline storage.
          * @method purge
          * @name purge
          * @memberOf OfflineModule.prototype
@@ -21209,13 +21135,12 @@ module.exports = (function () {
          * @param {function} [error] An error callback.
          */
         /**
-         * Removes all data for a specific content type from the offline storage. If caching is enabled clears the cache
-         * for the specified content type as well.
+         * Removes all data for a specific content type from the offline storage.
          * @method purge
          * @name purge
          * @memberOf OfflineModule.prototype
          * @param {string} contentType The content type to purge.
-         * @returns {Promise}
+         * @returns Promise
          */
         purge: function (contentType, success, error) {
             return this._queryProcessor.purge(contentType, success, error);
@@ -22513,7 +22438,7 @@ module.exports = (function () {
          * @method getItemsForSync
          * @name getItemsForSync
          * @memberOf OfflineModule.prototype
-         * @returns {Promise}
+         * @returns Promise
          */
         getItemsForSync: function (success, error) {
             var self = this;
@@ -23821,10 +23746,10 @@ var _ = require('../common')._;
 'use strict';
 
 if (platform.isNativeScript) {
-    var NativeScriptCurrentDevice = require('./NativeScriptCurrentDevice');
+	var NativeScriptCurrentDevice = require('./NativeScriptCurrentDevice');
     module.exports = NativeScriptCurrentDevice;
 } else if (platform.isCordova || platform.isDesktop) {
-    var CordovaCurrentDevice = require('./CordovaCurrentDevice');
+	var CordovaCurrentDevice = require('./CordovaCurrentDevice');
     module.exports = CordovaCurrentDevice;
 } else {
     module.exports = _.noop;
@@ -24498,12 +24423,12 @@ module.exports = (function () {
     /**
      * @class Query
      * @classdesc A query class used to describe a request that will be made to the {{site.TelerikBackendServices}} JavaScript API.
-     * @param {object} [filter] A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
-     * @param {object} [fields] A [fields expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-subset-fields) definition.
-     * @param {object} [sort] A [sort expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-sorting) definition.
+     * @param {object} [filter] A [filter expression]({% slug rest-api-querying-filtering %}) definition.
+     * @param {object} [fields] A [fields expression]({% slug rest-api-querying-Subset-of-fields %}) definition.
+     * @param {object} [sort] A [sort expression]({% slug rest-api-querying-sorting %}) definition.
      * @param {number} [skip] Number of items to skip. Used for paging.
      * @param {number} [take] Number of items to take. Used for paging.
-     * @param {object} [expand] An [expand expression](http://docs.telerik.com/platform/backend-services/rest/data/relations/relations-defining) definition.
+     * @param {object} [expand] An [expand expression]({% slug features-data-relations-defining-expand %}) definition.
      */
     function Query(filter, fields, sort, skip, take, expand) {
         this.filter = filter;
@@ -24520,7 +24445,7 @@ module.exports = (function () {
          * @memberOf Query.prototype
          * @method where
          * @name where
-         * @param {object} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @returns {Query}
          */
         /** Defines a filter definition for the current query.
@@ -24540,7 +24465,7 @@ module.exports = (function () {
         /** Applies a fields selection to the current query. This allows you to retrieve only a subset of all available item fields.
          * @memberOf Query.prototype
          * @method select
-         * @param {object} fieldsExpression A [fields expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-subset-fields) definition.
+         * @param {object} fieldsExpression A [fields expression]({% slug rest-api-querying-Subset-of-fields %}) definition.
          * @returns {Query}
          */
         select: function () {
@@ -24591,7 +24516,7 @@ module.exports = (function () {
         /** Sets an expand expression for the current query. This allows you to retrieve complex data sets using a single query based on relations between data types.
          * @memberOf Query.prototype
          * @method expand
-         * @param {object} expandExpression An [expand expression](http://docs.telerik.com/platform/backend-services/rest/data/relations/relations-defining) definition.
+         * @param {object} expandExpression An [expand expression]({% slug features-data-relations-defining-expand %}) definition.
          * @returns {Query}
          */
         expand: function (expandExpression) {
@@ -25353,7 +25278,7 @@ module.exports = (function () {
          * @memberOf WhereQuery.prototype
          * @param {string} field Field name.
          * @param {string} regularExpression Regular expression in PCRE format.
-         * @param {string} [options] A string of regex options to use. See [specs](http://docs.mongodb.org/manual/reference/operator/query/regex/#op._S_options) for a description of available options.
+         * @param {string} [options] A string of regex options to use. See [specs]({http://docs.mongodb.org/manual/reference/operator/query/regex/#op._S_options}) for a description of available options.
          * @returns {WhereQuery}
          */
         regex: function (field, value, flags) {
@@ -25365,7 +25290,7 @@ module.exports = (function () {
          * @memberOf WhereQuery.prototype
          * @param {string} field Field name.
          * @param {string} value The string that the field should start with.
-         * @param {string} [options] A string of regex options to use. See [specs](http://docs.mongodb.org/manual/reference/operator/query/regex/#op._S_options) for a description of available options.
+         * @param {string} [options] A string of regex options to use. See [specs]({http://docs.mongodb.org/manual/reference/operator/query/regex/#op._S_options}) for a description of available options.
          * @returns {WhereQuery}
          */
         startsWith: function (field, value, flags) {
@@ -25377,7 +25302,7 @@ module.exports = (function () {
          * @memberOf WhereQuery.prototype
          * @param {string} field Field name.
          * @param {string} value The string that the field should end with.
-         * @param {string} [options] A string of  regex options to use. See [specs](http://docs.mongodb.org/manual/reference/operator/query/regex/#op._S_options) for a description of available options.
+         * @param {string} [options] A string of  regex options to use. See [specs]({http://docs.mongodb.org/manual/reference/operator/query/regex/#op._S_options}) for a description of available options.
          * @returns {WhereQuery}
          */
         endsWith: function (field, value, flags) {
@@ -25721,13 +25646,12 @@ module.exports = (function () {
 
 var common = require('../common');
 var rsvp = common.rsvp;
-var utils = require('../utils');
 
 function NativeScriptFileStore(storagePath, options) {
     this.options = options;
     this.fs = require('file-system');
     this.dataDirectoryPath = this.fs.knownFolders.documents().path;
-    this.filesDirectoryPath = this.fs.path.join(this.dataDirectoryPath, storagePath);
+    this.filesDirectoryPath = storagePath;
 }
 
 NativeScriptFileStore.prototype = {
@@ -25737,13 +25661,10 @@ NativeScriptFileStore.prototype = {
         }
     },
 
-    removeFilesDirectory: function () {
-        var self = this;
-
-        return self.getFilesDirectory()
-            .then(function (filesDirectory) {
-                return filesDirectory.remove();
-            });
+    removeFilesDirectory: function (directoryEntry) {
+        var filesDirectoryPath = this.fs.path.join(directoryEntry.path, this.filesDirectoryPath);
+        var filesDirectory = this.fs.Folder.fromPath(filesDirectoryPath);
+        return filesDirectory.remove();
     },
 
     removeFile: function (fileEntry) {
@@ -25761,22 +25682,11 @@ NativeScriptFileStore.prototype = {
     getFile: function (path) {
         var self = this;
         return new rsvp.Promise(function (resolve, reject) {
-            self.resolveDataDirectory()
-                .then(function (directoryEntry) {
-                    var fullFilePath = self.fs.path.join(directoryEntry.path, path);
-                    var file = self.fs.File.fromPath(fullFilePath);
-                    resolve(file);
-                })
-                .catch(reject);
-        });
-    },
-
-    getFilesDirectory: function () {
-        var self = this;
-
-        return new rsvp.Promise(function (resolve) {
-            var filesDirectory = self.fs.Folder.fromPath(self.filesDirectoryPath);
-            resolve(filesDirectory);
+            self.resolveDataDirectory(function (directoryEntry) {
+                var fullFilePath = self.fs.path.join(directoryEntry.path, path);
+                var file = self.fs.File.fromPath(fullFilePath);
+                resolve(file);
+            }, reject);
         });
     },
 
@@ -25793,13 +25703,11 @@ NativeScriptFileStore.prototype = {
         var self = this;
 
         return new rsvp.Promise(function (resolve, reject) {
-            self.resolveDataDirectory()
-                .then(function (directoryEntry) {
-                    var fileDirectoryPath = self.fs.path.join(directoryEntry.path, self.filesDirectoryPath);
-                    self.fs.Folder.fromPath(fileDirectoryPath);
-                    resolve();
-                })
-                .catch(reject);
+            self.resolveDataDirectory(function (directoryEntry) {
+                var fileDirectoryPath = self.fs.path.join(directoryEntry.path, self.filesDirectoryPath);
+                self.fs.Folder.fromPath(fileDirectoryPath);
+                resolve();
+            });
         });
     },
 
@@ -25837,13 +25745,12 @@ NativeScriptFileStore.prototype = {
 };
 
 module.exports = NativeScriptFileStore;
-},{"../common":58,"../utils":99,"file-system":"file-system"}],95:[function(require,module,exports){
+},{"../common":58,"file-system":"file-system"}],95:[function(require,module,exports){
 'use strict';
 
 var EverliveError = require('../EverliveError').EverliveError;
 var common = require('../common');
 var rsvp = common.rsvp;
-var _ = common._;
 var utils = require('../utils');
 var platform = require('../everlive.platform');
 var path = require('path');
@@ -26259,13 +26166,14 @@ module.exports = (function () {
         },
 
         /**
-         * Modifies whether the query should be invoked on the offline storage.
          * @memberOf Data.prototype
-         * @method useOffline
-         * @name useOffline
-         * @param {boolean} [useOffline]
-         * @returns {Data} Returns the same instance of the Data object.
-         */
+         * @method
+         * Modifies whether the query should be invoked on the offline storage.
+         * Default is true.
+         * Only valid when offlineStorage is enabled.
+         * @param useOffline
+         * @returns {Data}
+         * */
         useOffline: function (useOffline) {
             if (arguments.length !== 1) {
                 throw new Error('A single value is expected in useOffline() query modifier');
@@ -26274,11 +26182,11 @@ module.exports = (function () {
         },
 
         /**
+         * @memberOf Data.prototype
+         * @method
+         * @name ignoreCache
          * Does not use the cache when retrieving the data.
          * Only valid when caching is enabled.
-         * @memberOf Data.prototype
-         * @method ignoreCache
-         * @name ignoreCache
          * @returns {Data}
          * */
         ignoreCache: function () {
@@ -26286,11 +26194,11 @@ module.exports = (function () {
         },
 
         /**
+         * @memberOf Data.prototype
+         * @method
+         * @name forceCache
          * Forces the request to get the data from the cache even if the data is already expired.
          * Only valid when caching is enabled.
-         * @memberOf Data.prototype
-         * @method forceCache
-         * @name forceCache
          * @returns {Data}
          * */
         forceCache: function () {
@@ -26298,11 +26206,11 @@ module.exports = (function () {
         },
 
         /**
-         * Sets cache expiration specifically for the current query.
-         * Only valid when caching is enabled.
          * @memberOf Data.prototype
-         * @method maxAge
+         * @method
          * @name maxAge
+         * Sets cache expiration specifically for the current query
+         * Only valid when caching is enabled.
          * @param maxAgeInMinutes
          * @returns {Data}
          * */
@@ -26319,11 +26227,11 @@ module.exports = (function () {
         },
 
         /**
+         * @memberOf Data.prototype
+         * @method
          * Modifies whether the query should invoke the {{@link Authentication.prototype.hasAuthenticationRequirement}}.
          * Default is false.
-         * Only valid when the authentication module has an onAuthenticationRequired function.
-         * @memberOf Data.prototype
-         * @method skipAuth
+         * Only valid when authentication module has an onAuthenticationRequired function .
          * @param skipAuth
          * @returns {Data}
          * */
@@ -26339,7 +26247,7 @@ module.exports = (function () {
          * Default is true.
          * Only valid when offlineStorage is enabled.
          * @memberOf Data.prototype
-         * @method applyOffline
+         * @method
          * @param applyOffline
          * @returns {Data}
          * */
@@ -26351,9 +26259,9 @@ module.exports = (function () {
         },
 
         /**
-         * Sets additional non-standard HTTP headers in the current data request. See [List of Request Parameters](http://docs.telerik.com/platform/backend-services/rest/apireference/RESTfulAPI/custom_headers) for more information.
+         * Sets additional non-standard HTTP headers in the current data request. See [List of Non-Standard HTTP Headers]{{% slug rest-api-headers}} for more information.
          * @memberOf Data.prototype
-         * @method withHeaders
+         * @method
          * @param {object} headers Additional headers to be sent with the data request.
          * @returns {Data}
          */
@@ -26363,8 +26271,8 @@ module.exports = (function () {
         /**
          * Sets an expand expression to be used in the data request. This allows you to retrieve complex data sets using a single query based on relations between data types.
          * @memberOf Data.prototype
-         * @method expand
-         * @param {object} expandExpression An [expand expression](http://docs.telerik.com/platform/backend-services/rest/data/relations/relations-defining) definition.
+         * @method
+         * @param {object} expandExpression An [expand expression]({% slug features-data-relations-defining-expand %}) definition.
          * @returns {Data}
          */
         expand: function (expandExpression) {
@@ -26444,6 +26352,13 @@ module.exports = (function () {
             requestOptions.headers[constants.Headers.sdk] = JSON.stringify(sdkHeaderValue);
         },
 
+        /**
+         * Processes a query with all of its options. Applies the operation online/offline
+         * @param {DataQuery} query The query to process
+         * @private
+         * @param {DataQuery} query
+         * @returns {Promise}
+         */
         processDataQuery: function (query) {
             var self = this;
 
@@ -26505,7 +26420,7 @@ module.exports = (function () {
          * @memberOf Data.prototype
          * @method get
          * @name get
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @returns {Promise} The promise for the request.
          */
         /**
@@ -26513,7 +26428,7 @@ module.exports = (function () {
          * @memberOf Data.prototype
          * @method get
          * @name get
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
@@ -26577,7 +26492,7 @@ module.exports = (function () {
          * @memberOf Data.prototype
          * @method count
          * @name count
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @returns {Promise} The promise for the request.
          */
         /**
@@ -26585,7 +26500,7 @@ module.exports = (function () {
          * @memberOf Data.prototype
          * @method count
          * @name count
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
@@ -26645,7 +26560,7 @@ module.exports = (function () {
          * @method rawUpdate
          * @name rawUpdate
          * @param {object} updateObject Update object that contains the new values.
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @returns {Promise} The promise for the request.
          */
         /**
@@ -26654,7 +26569,7 @@ module.exports = (function () {
          * @method rawUpdate
          * @name rawUpdate
          * @param {object} updateObject Update object that contains the new values.
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
@@ -26746,7 +26661,7 @@ module.exports = (function () {
          * @method update
          * @name update
          * @param {object} updateObject The update object.
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @returns {Promise} The promise for the request.
          */
         /**
@@ -26755,7 +26670,7 @@ module.exports = (function () {
          * @method update
          * @name update
          * @param {object} model The update object.
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
@@ -26806,7 +26721,7 @@ module.exports = (function () {
          * @memberOf Data.prototype
          * @method destroy
          * @name destroy
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @returns {Promise} The promise for the request.
          */
         /**
@@ -26814,7 +26729,7 @@ module.exports = (function () {
          * @memberOf Data.prototype
          * @method destroy
          * @name destroy
-         * @param {object|null} filter A [filter expression](http://docs.telerik.com/platform/backend-services/rest/queries/queries-filtering) definition.
+         * @param {object|null} filter A [filter expression]({% slug rest-api-querying-filtering %}) definition.
          * @param {Function} [success] A success callback.
          * @param {Function} [error] An error callback.
          */
@@ -26981,7 +26896,7 @@ module.exports = (function () {
         /**
          * Checks if the specified data item is new or not.
          * @memberOf Data.prototype
-         * @method isNew
+         * @method
          * @param model Item to check.
          * @returns {boolean}
          */
@@ -27112,85 +27027,18 @@ module.exports.addFilesFunctions = function addFilesFunctions(ns) {
         }, success, error);
     };
 
-    /**
-     * Downloads a file to the device's file system. Wraps the Apache Cordova "download()" [FileTransfer](http://cordova.apache.org/docs/en/2.7.0/cordova_file_file.md.html#FileTransfer) method. Note that the signatures of these methods differ.
-     * @memberof Files.prototype
-     * @method download
-     * @param {string} fileToDownload A Backend Services File ID.
-     * @param {string} pathOnDevice An Apache Cordova FileSystem URL representing the local path on the device where the downloaded file will be saved. Maps to the "target" FileTransfer plugin parameter.
-     * @param {object} [options] Additional request options. Maps to the "options" FileTransfer plugin parameter.
-     * @param {object} [options.headers] A JSON object containing headers to send along with the request.
-     * @param {boolean} [trustAllHosts=false] Whether to accept all security certificates including self-signed certificates. Maps to the "trustAllHosts" FileTransfer plugin parameter.
-     * @returns {Promise} The promise for the request.
-     */
-    /**
-     * Downloads a file to the device's file system. Wraps the Apache Cordova "download()" [FileTransfer](http://cordova.apache.org/docs/en/2.7.0/cordova_file_file.md.html#FileTransfer) method. Note that the signatures of these methods differ.
-     * @memberof Files.prototype
-     * @method download
-     * @param {string} fileToDownload A Backend Services File ID.
-     * @param {string} pathOnDevice An Apache Cordova FileSystem URL representing the local path on the device where the downloaded file will be saved. Maps to the "target" FileTransfer plugin parameter.
-     * @param {object} [options] Additional request options. Maps to the "options" FileTransfer plugin parameter.
-     * @param {object} [options.headers] A JSON object containing headers to send along with the request.
-     * @param {boolean} [trustAllHosts=false] Whether to accept all security certificates including self-signed certificates. Maps to the "trustAllHosts" FileTransfer plugin parameter.
-     * @param {Function} [success] A success callback that is passed an Apache Cordova [FileEntry](https://cordova.apache.org/docs/en/3.3.0/cordova_file_file.md.html#FileEntry) object. Maps to the "successCallback" FileTransfer plugin parameter.
-     * @param {Function} [error] An error callback that is passed an Apache Cordova [FileTransferError](https://github.com/apache/cordova-plugin-file-transfer#filetransfererror) object. Maps to the "errorCallback" FileTransfer plugin parameter.
-     */
     ns.download = function (url, localPath, options, trustAllHosts, success, error) {
-        var self = this;
-
         return buildPromise(function (success, error) {
             if (!trustAllHosts) {
                 trustAllHosts = false;
             }
 
-            var headers = options && options.headers ? options.headers : {};
-
             var fileTransfer = new FileTransfer();
-            self.withHeaders(headers)
-                .getById(url)
-                .then(function (res) {
-                    var file = res.result;
-                    url = file.Uri;
-                    fileTransfer.download(url, localPath, success, error, trustAllHosts, options);
-                }, error);
+            fileTransfer.download(url, localPath, success, error, trustAllHosts, options);
         }, success, error);
     };
 
-    /**
-     * Uploads a file from the device's file system to Backend Services. Wraps the Apache Cordova "upload()" [FileTransfer](http://cordova.apache.org/docs/en/2.7.0/cordova_file_file.md.html#FileTransfer) method. Note that the signatures of these methods differ.
-     * @memberof Files.prototype
-     * @method upload
-     * @param {string} fileToUpload An Apache Cordova FileSystem URL representing the full path to the file on the device.
-     * @param {object} [options] Additional request options. Maps to the "options" FileTransfer plugin parameter.
-     * @param {string} [options.fileKey] The name of the form element. Defaults to 'file' in the FileTransfer plugin parameter.
-     * @param {string} [options.fileName] The file name to use when uploading the file. Defaults to 'image.jpg' in the FileTransfer plugin.
-     * @param {string} [options.httpMethod] The HTTP method to use, either POST or PUT. Defaults to 'POST' in the FileTransfer plugin parameter.
-     * @param {string} [options.mimeType] The mime type of the uploaded data. Defaults to 'image/jpeg' in the FileTransfer plugin parameter.
-     * @param {object} [options.params] A set of optional key/value pairs to pass in the HTTP request.
-     * @param {boolean} [options.chunkedMode] Whether to upload the data in chunked streaming mode. Defaults to 'true' in the FileTransfer plugin parameter.
-     * @param {object} [options.headers] A JSON object for the headers to send along with the request.
-     * @param {boolean} [trustAllHosts=false] Whether to accept all security certificates including self-signed certificates. Maps to the "trustAllHosts" FileTransfer plugin parameter.
-     * @returns {Promise} The promise for the request.
-     */
-    /**
-     * Uploads a file from the device's file system to Backend Services. Wraps the Apache Cordova "upload()" [FileTransfer](http://cordova.apache.org/docs/en/2.7.0/cordova_file_file.md.html#FileTransfer) method. Note that the signatures of these methods differ.
-     * @memberof Files.prototype
-     * @method upload
-     * @param {string} fileToUpload An Apache Cordova FileSystem URL representing the full path to the file on the device.
-     * @param {object} [options] Additional request options. Maps to the "options" FileTransfer plugin parameter.
-     * @param {string} [options.fileKey] The name of the form element. Defaults to 'file' in the FileTransfer plugin parameter.
-     * @param {string} [options.fileName] The file name to use when uploading the file. Defaults to 'image.jpg' in the FileTransfer plugin parameter.
-     * @param {string} [options.httpMethod] The HTTP method to use, either POST or PUT. Defaults to 'POST' in the FileTransfer plugin parameter.
-     * @param {string} [options.mimeType] The mime type of the uploaded data. Defaults to 'image/jpeg' in the FileTransfer plugin parameter.
-     * @param {object} [options.params] A set of optional key/value pairs to pass in the HTTP request.
-     * @param {boolean} [options.chunkedMode] Whether to upload the data in chunked streaming mode. Defaults to 'true' in the FileTransfer plugin parameter.
-     * @param {object} [options.headers] A JSON object for the headers to send along with the request.
-     * @param {boolean} [trustAllHosts=false] Whether to accept all security certificates including self-signed certificates. Maps to the "trustAllHosts" FileTransfer plugin parameter.
-     * @param {Function} [success] A success callback that is passed an Apache Cordova [FileUploadResult](https://github.com/apache/cordova-plugin-file-transfer#fileuploadresult) object. Maps to the "successCallback" FileTransfer plugin parameter.
-     * @param {Function} [error] An error callback that is passed an Apache Cordova [FileTransferError](https://github.com/apache/cordova-plugin-file-transfer#filetransfererror) object. Maps to the "errorCallback" FileTransfer plugin parameter.
-     */
-    ns.upload = function (localPath, options, trustAllHosts, success, error) {
-        var url = this.getUploadUrl();
+    ns.upload = function (localPath, url, options, trustAllHosts, success, error) {
         return buildPromise(function (success, error) {
             if (!trustAllHosts) {
                 trustAllHosts = false;
@@ -28195,11 +28043,11 @@ utils.buildUrl = function (setup) {
 utils.getDbOperators = function (expression, shallow) {
     var dbOperators = [];
 
-    if (typeof expression === 'string' || typeof expression === 'number') {
+    if (typeof expression === 'string') {
         return dbOperators;
     }
 
-    var modifierKeys = Object.keys(expression || {});
+    var modifierKeys = Object.keys(expression);
     _.each(modifierKeys, function (key) {
         if (key.indexOf('$') === 0) {
             dbOperators.push(key);
